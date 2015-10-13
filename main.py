@@ -299,7 +299,7 @@ class APIHandler(webapp2.RequestHandler):
 				'title': thesis.thesis_title,
 				'abstract': thesis.thesis_abstract,
 				'section': thesis.thesis_section,
-				'author': user_key.get() + ' ' + user_key.get().last_name
+				'author': user_key.get().first_name + ' ' + user_key.get().last_name
 			}
 		}
 		self.response.out.write(json.dumps(response))
@@ -473,7 +473,15 @@ class StudentHandler(webapp2.RequestHandler):
 				if user.is_admin:
 					logout_url = users.create_logout_url('/')
 					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
 					template_values = {
+						'links':links,
 						'logout_url':logout_url,
 						'user':user.first_name
 					}
@@ -1001,14 +1009,40 @@ class StudentListHandler(webapp2.RequestHandler):
 			user_key = ndb.Key('User', loggedin_user.user_id())
 			user = user_key.get()
 			if user:
-				logout_url = users.create_logout_url('/')
-				link_text = 'Logout'
-				template_values = {
-					'logout_url':logout_url,
-					'user':user.first_name
-				}
-				template = JINJA_ENVIRONMENT.get_template('/pages/studentlist.html')
-				self.response.write(template.render(template_values))
+				if user.is_admin:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/studentlist.html')
+					self.response.write(template.render(template_values))
+				else:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list'}
+					links['Students'] = {'List':'/student/list'}
+					links['Universities'] = {'List':'/university/list'}
+					links['Colleges'] = {'List':'/college/list'}
+					links['Departments'] = {'List':'/department/list'}
+					links['Theses'] = {'List':'/thesis/list/all'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/studentlist.html')
+					self.response.write(template.render(template_values))
 
 			else:
 				self.redirect('/register')
@@ -2030,15 +2064,40 @@ class SearchHandler(webapp2.RequestHandler):
 			user_key = ndb.Key('User', loggedin_user.user_id())
 			user = user_key.get()
 			if user:
-				logout_url = users.create_logout_url('/')
-				link_text = 'Logout'
-				template_values = {
-					'logout_url':logout_url,
-					'user':user.first_name
-				}
-				template = JINJA_ENVIRONMENT.get_template('/pages/search.html')
-				self.response.write(template.render(template_values))
-
+				if user.is_admin:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/search.html')
+					self.response.write(template.render(template_values))
+				else:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list'}
+					links['Students'] = {'List':'/student/list'}
+					links['Universities'] = {'List':'/university/list'}
+					links['Colleges'] = {'List':'/college/list'}
+					links['Departments'] = {'List':'/department/list'}
+					links['Theses'] = {'List':'/thesis/list/all'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/search.html')
+					self.response.write(template.render(template_values))
 			else:
 				self.redirect('/register')
 		else:
@@ -2049,31 +2108,44 @@ class SearchHandler(webapp2.RequestHandler):
 			}
 			template = JINJA_ENVIRONMENT.get_template('/pages/login.html')
 			self.response.write(template.render(template_values))
+
 	def post(self):
 		keyword = []
+		search_results = {}
 		keyword = (self.request.get('search_keyword')).lower().split()
+		logging.info(keyword)
 		results = thesisentry.query(thesisentry.thesis_tags.IN(keyword)).fetch()
+		logging.info(len(results))
 		if len(results) == 0:
-			keyword = []
-			keyword = (self.request.get('search_keyword')).lower().split()
 			stud_res = Student.query(Student.student_name_portions.IN(keyword)).fetch()
 			keys = []
-			for s in stud_res:
-				keys.append(s.key)
-			results = thesisentry.query(thesisentry.thesis_proponent.IN(keys)).fetch()
-			logging.info(results)
-
-		search_results = {}
-
-		for r in results:
-			search_results[r.thesis_title] = r.key.id()
-
-		self.response.headers['Content-Type'] = 'application.json'
-		response = {
-			'result':'OK',
-			'data': search_results
-		}
-		self.response.out.write(json.dumps(response))
+			if len(stud_res) != 0:
+				for s in stud_res:
+					keys.append(s.key)
+				results = thesisentry.query(thesisentry.thesis_proponent.IN(keys)).fetch()
+				for r in results:
+					search_results[r.thesis_title] = r.key.id()
+				self.response.headers['Content-Type'] = 'application.json'
+				response = {
+					'result':'OK',
+					'data': search_results
+				}
+				self.response.out.write(json.dumps(response))
+			else:
+				self.response.headers['Content-Type'] = 'application.json'
+				response = {
+					'result':'OK'
+				}
+				self.response.out.write(json.dumps(response))
+		else:
+			for r in results:
+				search_results[r.thesis_title] = r.key.id()
+			self.response.headers['Content-Type'] = 'application.json'
+			response = {
+				'result':'OK',
+				'data': search_results
+			}
+			self.response.out.write(json.dumps(response))
 
 app = webapp2.WSGIApplication([
 	('/api/thesis', APIHandler),

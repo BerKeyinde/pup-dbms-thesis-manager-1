@@ -31,3 +31,7 @@ border-left: 1px solid #F2F2F2;
 border-right: 1px solid #FFF;
 }
 ul { list-style-type: none; }
+
+.grp {
+  padding-bottom: 10px;
+}

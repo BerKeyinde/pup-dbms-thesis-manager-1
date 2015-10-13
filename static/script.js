@@ -66,11 +66,11 @@ function search(event)
   $.post(user_api, user, function(response) {
       console.log('data', response);
       $('.search-results').empty()
-      if (jQuery.isEmptyObject(response.data)) {
+      if (!response.data) {
         alert("No Search Results!");
       } else {
         $.each(response.data, function(key, value){
-        $('.search-results').append('<li><a href="/thesis/' + value + '">' + key + '</a></li>');
+        $('.search-results').append('<li><i class="fui-arrow-right"></i><a href="/thesis/' + value + '">' + key + '</a></li>');
       });
       }
       

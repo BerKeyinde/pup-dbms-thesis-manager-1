@@ -57,7 +57,8 @@
     </nav><!-- /navbar -->
     <div class='well well-lg'>
       <div class='container'>
-        <form class="faculty-entry">
+        <p style='text-align:center;'>UPDATE FACULTY ENTRY</p>
+        <form class="faculty-update">
           <div class='row'>
             <div class='col-md-2'></div>
             <div class='col-md-1'>
@@ -73,19 +74,19 @@
             </div>
             <div class='col-md-2'></div>
             <div class='col-md-5'>
-              <input class="form-control flat" type="text" placeholder="Full Name: {{item.faculty_full}}" disabled style='width:80%;' />
+              <input class="form-control" type="text" placeholder="Full Name: {{item.faculty_full}}" disabled style='width:80%;' />
             </div>
             <div class='col-md-2'></div>
           </div>
           <div class='row' style='padding:0;'>
             <div class='col-md-2'></div>
-            <div class='col-md-4'>
+            <div class='col-md-4 grp'>
               <div class='input-group'>
                 <span class='input-group-addon'>First Name</span>
                  <input class="field faculty-fname form-control flat" placeholder="FIRST NAME" name="faculty_fname" value='{{item.faculty_fname}}'/>
               </div>
             </div>
-            <div class='col-md-4'>
+            <div class='col-md-4 grp'>
               <div class='input-group'>
                 <span class='input-group-addon'>Last Name</span>
                 <input class="field faculty-sname form-control flat" placeholder="LAST NAME" name="faculty_sname" value='{{item.faculty_sname}}'/>
@@ -95,16 +96,50 @@
           </div>
           <div class='row'>
             <div class='col-md-2'></div>
-            <div class='col-md-8'></div>
+            <div class='col-md-4 grp'>
+              <div class='input-group'>
+                <span class='input-group-addon'>Email Address</span>
+                 <input class='field faculty-email form-control flat' placeholder='EMAIL ADDRESS' name='faculty_email' value='{{item.faculty_email}}' />
+              </div>
+            </div>
+            <div class='col-md-4 grp'>
+              <div class='input-group'>
+                <span class='input-group-addon'>Phone Number</span>
+                <input class="field faculty-phone form-control flat" placeholder="PHONE NUMBER" name="faculty_phone" value='{{item.faculty_phone}}' />
+              </div>
+            </div>
             <div class='col-md-2'></div>
           </div>
           <div class='row'>
             <div class='col-md-2'></div>
-            <div class='col-md-8'></div>
+            <div class='col-md-4 grp'>
+              <div class='input-group'>
+                <span class='input-group-addon'>Birthdate</span>
+                <input class='form-control flat' type="text" id="datepicker" name='faculty_bday' placeholder='BIRTHDATE' value='{{item.faculty_bday}}' />
+              </div>
+            </div>
+            <div class='col-md-4 grp'>
+              <select data-toggle="select" style='width:100%;' class="form-control select select-primary select-lg department-list" id='department-list' name='faculty_department'>
+                <option value='{{dept}}' selected>{{dept}}</option>
+                <option value='/department/create'>ADD DEPARTMENT</option>
+              </select>
+            </div>
             <div class='col-md-2'></div>
           </div>
-        </div>
-      </form>
+          <div class='row'>
+            <div class='col-md-8  '></div>
+            <div class='col-md-1'>
+              <input style='float:right;' class='btn btn-warning' type="submit" value='SUBMIT' />
+              </form>
+            </div>
+            <div class='col-md-1'>
+              <form class='faculty-delete'>
+                <input style='float:right;' type='submit' class='btn btn-danger' value='DELETE'>
+              </form>
+            </div>
+            <div class='col-md-2'></div>
+          </div>
+      </div>
     </div>
 </div>
 
@@ -117,9 +152,8 @@
             </p>
 
             <p class="pvl">
+              <iframe src="http://ghbtns.com/github-btn.html?user=BerKeyinde&repo=pup-dbms-thesis-manager-1&type=fork&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>
                 <iframe src="http://ghbtns.com/github-btn.html?user=BerKeyinde&type=follow&count=true" height="20" width="195" frameborder="0" scrolling="0" style="width:195px; height: 20px;" allowTransparency="true"></iframe>
-              <!--<iframe src="http://ghbtns.com/github-btn.html?user=designmodo&repo=Flat-UI&type=fork&count=true" height="20" width="107" frameborder="0" scrolling="0" style="width:105px; height: 20px;" allowTransparency="true"></iframe>-->
-              
             </p>
           </div> <!-- /col-xs-7 -->
 
@@ -200,7 +234,7 @@ $('.faculty-delete').submit(facultyDelete);
     $('a[href="#"]').click(function(){
       $('.dropdown-toggle').dropdown()
     }); 
-</script>
+</script> 
 <script type="text/javascript" src='/static/flatui/js/flat-ui.min.js'></script>
 <script type="text/javascript" src='/static/flatui/js/prettify.js'></script>
 <script type="text/javascript" src='/static/flatui/js/radiocheck.js'></script>

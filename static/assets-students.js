@@ -5,7 +5,7 @@ function loadStudents () {
 	$.get(Students_list_api, {}, function(response) {
     response.data.forEach(function(student) {
       var Students_item = student.full_name;
-      $('.students').prepend('<li>' + '<a href="' + student.id + '">' + Students_item + '</a>' + '</li>');
+      $('.students').prepend('<li><i class="fui-arrow-right"></i><a href="' + student.id + '">' + Students_item + '</a>' + '</li>');
       $('.thesis_proponents').prepend('<option value="' + Students_item + '">' + Students_item + '</option>');
       });
     $('.thesis_proponents').chosen();
