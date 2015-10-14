@@ -6,6 +6,8 @@ import os
 import logging
 import json
 import csv
+from random import randrange
+import random
 
 JINJA_ENVIRONMENT = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -120,6 +122,9 @@ class MainPageHandler(webapp2.RequestHandler):
 		if loggedin_user:
 			user_key = ndb.Key('User', loggedin_user.user_id())
 			user = user_key.get()
+			thesis = thesisentry.query().fetch()
+			thesis = random.sample(thesis, 10)
+			logging.info(thesis)
 			if user:
 				if user.is_admin:
 					link_text = 'Logout'
@@ -131,6 +136,7 @@ class MainPageHandler(webapp2.RequestHandler):
 					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
 					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
 					template_values = {
+						'thesis': thesis,
 						'links':links,
 						'search_url':'/search',
 						'logout_url': users.create_logout_url('/'),
@@ -148,6 +154,7 @@ class MainPageHandler(webapp2.RequestHandler):
 					links['Departments'] = {'List':'/department/list'}
 					links['Theses'] = {'List':'/thesis/list/all'}
 					template_values = {
+						'thesis': thesis,
 						'links':links,
 						'search_url':'/search',
 						'logout_url': users.create_logout_url('/'),
@@ -177,7 +184,7 @@ class APIHandler(webapp2.RequestHandler):
 				thesisdet = thesisentry.query().order(-thesisentry.date).fetch()
 				thesis_list = []
 				for thesis in thesisdet:
-					# user = User.query(User.key == thesis.thesis_author)
+					user = User.query(User.key == thesis.thesis_author)
 					e = []
 					# for u in user:
 					# 	e.append({
@@ -214,7 +221,8 @@ class APIHandler(webapp2.RequestHandler):
 						'adviser': f,
 						'section': thesis.thesis_section,
 						'department': d,
-						'thesis_id': thesis.key.id()
+						'thesis_id': thesis.key.id(),
+						'author': e
 					})
 
 
@@ -1823,6 +1831,14 @@ class ThesisEditHandler(webapp2.RequestHandler):
 					logout_url = users.create_logout_url('/')
 					link_text = 'Logout'
 
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
+
 					thesis = thesisentry.get_by_id(int(id))
 					adviser = Faculty.get_by_id(thesis.thesis_adviser.id())
 					adviser = adviser.faculty_full
@@ -1836,6 +1852,7 @@ class ThesisEditHandler(webapp2.RequestHandler):
 					department = department.department_name
 
 					template_values = {
+						'links':links,
 						'id': id,
 						'proponents':proponents,
 						'adviser':adviser,
@@ -1922,7 +1939,7 @@ class ThesisEditHandler(webapp2.RequestHandler):
 				'title': thesis.thesis_title,
 				'abstract': thesis.thesis_abstract,
 				'section': thesis.thesis_section,
-				'author': user_key.get() + ' ' + user_key.get().last_name
+				'author': user_key.get().first_name + ' ' + user_key.get().last_name
 			}
 		}
 		self.response.out.write(json.dumps(response))
@@ -2065,6 +2082,14 @@ class ThesisDetailsHandler(webapp2.RequestHandler):
 					logout_url = users.create_logout_url('/')
 					link_text = 'Logout'
 
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
+
 					thesis = thesisentry.get_by_id(int(id))
 					adviser = Faculty.get_by_id(thesis.thesis_adviser.id())
 					adviser = adviser.faculty_full
@@ -2076,9 +2101,11 @@ class ThesisDetailsHandler(webapp2.RequestHandler):
 
 					tags = thesis.thesis_tags
 					t = thesisentry.query(thesisentry.thesis_tags.IN(tags)).fetch()
+
 					edit_link = {}
 					edit_link['Edit Thesis Entry'] = '/thesis/' + id + '/edit'
 					template_values = {
+						'links':links,
 						'edit_link':edit_link,
 						'related':t,
 						'proponents':proponents,
@@ -2092,6 +2119,14 @@ class ThesisDetailsHandler(webapp2.RequestHandler):
 				else:
 					logout_url = users.create_logout_url('/')
 					link_text = 'Logout'
+
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list'}
+					links['Students'] = {'List':'/student/list'}
+					links['Universities'] = {'List':'/university/list'}
+					links['Colleges'] = {'List':'/college/list'}
+					links['Departments'] = {'List':'/department/list'}
+					links['Theses'] = {'List':'/thesis/list/all'}
 
 					thesis = thesisentry.get_by_id(int(id))
 					adviser = Faculty.get_by_id(thesis.thesis_adviser.id())
@@ -2107,6 +2142,7 @@ class ThesisDetailsHandler(webapp2.RequestHandler):
 					edit_link = {}
 					edit_link[''] = '#'
 					template_values = {
+						'links':links,
 						'edit_link':edit_link,
 						'related':t,
 						'proponents':proponents,
