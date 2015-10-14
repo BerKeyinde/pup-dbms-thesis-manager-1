@@ -9,17 +9,22 @@ function loadAll() {
 
     response.student_data.forEach(function(student){
       var thesis_proponent = student.full_name;
-      $('.thesis_proponents').append('<option value="' + thesis_proponent + '">' + thesis_proponent + '</option>');
+      //$('.thesis_proponents').append('<option value="' + thesis_proponent + '">' + thesis_proponent + '</option>');
+      var select = document.getElementById('thesis_proponents');
+        var opt = document.createElement('option'); 
+            opt.value = thesis_proponent;
+            opt.innerHTML = thesis_proponent;
+            select.appendChild(opt);
     });
 
     response.department_data.forEach(function(department){
       var thesis_department = department.name
-      $('.thesis_department').append('<option value="' + thesis_department + '">' + thesis_department + '</option>');
+      var select = document.getElementById('department-list');
+        var opt = document.createElement('option'); 
+            opt.value = thesis_department;
+            opt.innerHTML = thesis_department + '/' + department.college + '/' + department.university;
+            select.appendChild(opt);
     });
-
-    $('.thesis_adviser').chosen();
-    $('.thesis_proponents').chosen();
-    $('.thesis_department').chosen();
   });
 }
 

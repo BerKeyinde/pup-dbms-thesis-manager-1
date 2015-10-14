@@ -55,8 +55,8 @@
           </ul>
       </div><!-- /.navbar-collapse -->
     </nav><!-- /navbar -->
+
     <div class='well well-lg'>
-      <div class='container'>
         <p style='text-align:center;'>UPDATE FACULTY ENTRY</p>
         <form class="faculty-update">
           <div class='row'>
@@ -77,8 +77,8 @@
               <input class="form-control" type="text" placeholder="Full Name: {{item.faculty_full}}" disabled style='width:80%;' />
             </div>
             <div class='col-md-2'></div>
-          </div>
-          <div class='row' style='padding:0;'>
+          </div><!--row-->
+          <div class='row'>
             <div class='col-md-2'></div>
             <div class='col-md-4 grp'>
               <div class='input-group'>
@@ -93,7 +93,7 @@
               </div>
             </div>
             <div class='col-md-2'></div>
-          </div>
+          </div><!--row-->
           <div class='row'>
             <div class='col-md-2'></div>
             <div class='col-md-4 grp'>
@@ -109,7 +109,7 @@
               </div>
             </div>
             <div class='col-md-2'></div>
-          </div>
+          </div><!--row-->
           <div class='row'>
             <div class='col-md-2'></div>
             <div class='col-md-4 grp'>
@@ -125,12 +125,12 @@
               </select>
             </div>
             <div class='col-md-2'></div>
-          </div>
+          </div><!--row-->
           <div class='row'>
-            <div class='col-md-8  '></div>
+            <div class='col-md-8 '></div>
             <div class='col-md-1'>
               <input style='float:right;' class='btn btn-warning' type="submit" value='SUBMIT' />
-              </form>
+            </form> <!-- faculty-update -->
             </div>
             <div class='col-md-1'>
               <form class='faculty-delete'>
@@ -138,9 +138,8 @@
               </form>
             </div>
             <div class='col-md-2'></div>
-          </div>
-      </div>
-    </div>
+          </div> <!--row-->
+    </div> <!-- well -->
 </div>
 
 <footer>

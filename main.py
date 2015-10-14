@@ -28,8 +28,8 @@ class thesisentry(ndb.Model):
 	@classmethod
 	def get_by_name(model, name):
 		try:
-			student = model.query(model.thesis_title == name)
-			return student.get()
+			title = model.query(model.thesis_title == name)
+			return title.get()
 		except Exception:
 			return None
 
@@ -370,9 +370,18 @@ class ThesisPageHandler(webapp2.RequestHandler):
 				if user.is_admin:
 					logout_url = users.create_logout_url('/')
 					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
 					template_values = {
-						'logout_url':logout_url,
-						'user':user.first_name
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
 					}
 					template = JINJA_ENVIRONMENT.get_template('/pages/thesis.html')
 					self.response.write(template.render(template_values))
@@ -756,7 +765,12 @@ class DataImportHandler(webapp2.RequestHandler):
 				if len(t) >= 3 and t not in tags:
 					tags.append(t.lower())
 				thesis.thesis_tags = tags
-			thesis.put()
+
+			thesis_entry = thesisentry.get_by_name(thesis.thesis_title)
+
+			if thesis_entry is None:
+				thesis.put()		
+
 			j += 1
 			logging.info(j)
 		filepath.close()
@@ -957,13 +971,11 @@ class ThesisCreateAPI(webapp2.RequestHandler):
 					col = College.query(College.key == d.department_college)
 					c = []
 					for co in col:
-						c.append({
-							'name':co.college_name
-							})
-					department.append({
-						'college':c,
-						'name':d.department_name
-						})	
+						department.append({
+							'college':co.college_name,
+							'university':co.college_university.get().university_name,
+							'name':d.department_name
+							})	
 
 				response = {
 					'result' : 'OK',
@@ -1412,7 +1424,15 @@ class StudentEdithandler(webapp2.RequestHandler):
 						department = Department.query(Department.key == student.student_department)
 						department = department.get()
 						department = department.department_name
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
 					data = {
+						'links':links,
 						'item' : student,
 						'id':id,
 						'dept' : department,
@@ -1914,14 +1934,40 @@ class ThesisListAll(webapp2.RequestHandler):
 			user_key = ndb.Key('User', loggedin_user.user_id())
 			user = user_key.get()
 			if user:
-				logout_url = users.create_logout_url('/')
-				link_text = 'Logout'
-				template_values = {
-					'logout_url':logout_url,
-					'user':user.first_name
-				}
-				template = JINJA_ENVIRONMENT.get_template('/pages/thesislist.html')
-				self.response.write(template.render(template_values))
+				if user.is_admin:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/thesislist.html')
+					self.response.write(template.render(template_values))
+				else:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list'}
+					links['Students'] = {'List':'/student/list'}
+					links['Universities'] = {'List':'/university/list'}
+					links['Colleges'] = {'List':'/college/list'}
+					links['Departments'] = {'List':'/department/list'}
+					links['Theses'] = {'List':'/thesis/list/all'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/thesislist.html')
+					self.response.write(template.render(template_values))
 
 			else:
 				self.redirect('/register')
@@ -1941,7 +1987,6 @@ class ThesisListFilter(webapp2.RequestHandler):
 			user_key = ndb.Key('User', loggedin_user.user_id())
 			user = user_key.get()
 			if user:
-
 				logging.info(value)
 				thesisdet = thesisentry.query(thesisentry.thesis_year == value).fetch()
 				selected = value
@@ -1959,17 +2004,44 @@ class ThesisListFilter(webapp2.RequestHandler):
 						department = department.get()
 						thesisdet = thesisentry.query(thesisentry.thesis_department == department.key).fetch()
 						selected = university.university_name
-
-				logout_url = users.create_logout_url('/')
-				link_text = 'Logout'
-				template_values = {
-					'thesis': thesisdet,
-					'selected': selected,
-					'logout_url':logout_url,
-					'user':user.first_name
-				}
-				template = JINJA_ENVIRONMENT.get_template('/pages/thesislistfiltered.html')
-				self.response.write(template.render(template_values))
+				if user.is_admin:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list','Create Entry':'/faculty/create'}
+					links['Students'] = {'List':'/student/list','Create Entry':'/student/create'}
+					links['Department'] = {'List':'/department/list','Create Entry':'/department/create'}
+					links['Universities'] = {'List':'/university/list','Create Entry':'/university/create'}
+					links['Colleges'] = {'List':'/college/list','Create Entry':'/college/create'}
+					links['Theses'] = {'List':'/thesis/list/all','Create Entry':'/thesis/create'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'thesis': thesisdet,
+						'selected': selected,
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/thesislistfiltered.html')
+					self.response.write(template.render(template_values))
+				else:
+					link_text = 'Logout'
+					links = {}
+					links['Faculty'] = {'List':'/faculty/list'}
+					links['Students'] = {'List':'/student/list'}
+					links['Universities'] = {'List':'/university/list'}
+					links['Colleges'] = {'List':'/college/list'}
+					links['Departments'] = {'List':'/department/list'}
+					links['Theses'] = {'List':'/thesis/list/all'}
+					template_values = {
+						'links':links,
+						'search_url':'/search',
+						'thesis': thesisdet,
+						'selected': selected,
+						'logout_url': users.create_logout_url('/'),
+						'user': user.first_name
+					}
+					template = JINJA_ENVIRONMENT.get_template('/pages/thesislistfiltered.html')
+					self.response.write(template.render(template_values))
 
 			else:
 				self.redirect('/register')
