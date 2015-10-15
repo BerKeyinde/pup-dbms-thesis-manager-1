@@ -184,13 +184,15 @@ class APIHandler(webapp2.RequestHandler):
 				thesisdet = thesisentry.query().order(-thesisentry.date).fetch()
 				thesis_list = []
 				for thesis in thesisdet:
-					user = User.query(User.key == thesis.thesis_author)
 					e = []
-					# for u in user:
-					# 	e.append({
-					# 		'first_name':u.first_name,
-					# 		'last_name':u.last_name
-					# 	})
+					if thesis.thesis_author is not None:
+						user = User.query(User.key == thesis.thesis_author)
+					
+						for u in user:
+							e.append({
+								'first_name':u.first_name,
+								'last_name':u.last_name
+							})
 
 					departmentlist = Department.query(Department.key == thesis.thesis_department)
 					d = []
