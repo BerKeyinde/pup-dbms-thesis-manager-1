@@ -155,7 +155,7 @@
       } else {college[data[i].name] = data[i].value;} 
     }
 
-    var college_api = '/college/{{item.key.id()}}';
+    var college_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/college/{{item.key.id()}}';
     $.post(college_api, college, function(response) {
       console.log('data', response)
       if (response.status = 'OK') {
@@ -181,7 +181,7 @@
     var r = confirm("Are you sure you want to delete this entry?");
 
     if (r == true) {
-      var college_api = '/college/{{item.key.id()}}/delete';
+      var college_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/college/{{item.key.id()}}/delete';
       $.post(college_api, college, function(response) {
       console.log(response)
       if (response.status = 'OK') {

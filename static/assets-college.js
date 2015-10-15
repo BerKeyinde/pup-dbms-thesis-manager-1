@@ -1,6 +1,6 @@
 function loadcollege () {
 	// body...
-	var college_list_api = '/college/api'
+	var college_list_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/college/api'
 
 	$.get(college_list_api, {}, function(response) {
     response.data.forEach(function(college) {
@@ -13,7 +13,6 @@ function loadcollege () {
             opt.innerHTML = college_item;
             select.appendChild(opt);
       });
-    $('.college_department').chosen();
 	});
 }
 
@@ -26,7 +25,7 @@ function collegeAdd(event)
     college[data[i].name] = data[i].value;
   }
 
-  var college_api = '/college/create';
+  var college_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/college/create';
   $.post(college_api, college, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {

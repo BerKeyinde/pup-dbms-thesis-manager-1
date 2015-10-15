@@ -1,6 +1,6 @@
 function loadFaculty () {
 	// body...
-	var faculty_list_api = '/faculty/api'
+	var faculty_list_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/faculty/api'
 
 	$.get(faculty_list_api, {}, function(response) {
     response.faculty_data.forEach(function(faculty) {
@@ -26,7 +26,7 @@ function facultyAdd(event)
     faculty[data[i].name] = data[i].value;
   }
 
-  var faculty_api = '/faculty/create';
+  var faculty_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/faculty/create';
   $.post(faculty_api, faculty, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {

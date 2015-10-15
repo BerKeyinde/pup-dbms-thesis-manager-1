@@ -119,7 +119,7 @@
       university[data[i].name] = data[i].value;
     }
 
-    var user_api = '/university/{{item.key.id()}}';
+    var user_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/university/{{item.key.id()}}';
     $.post(user_api, university, function(response) {
       console.log('data', response)
       if (response.status = 'OK') {
@@ -144,7 +144,7 @@
     var r = confirm("Are you sure you want to delete this entry?");
 
     if (r == true) {
-      var university_api = '/university/{{item.key.id()}}/delete';
+      var university_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/university/{{item.key.id()}}/delete';
       $.post(university_api, university, function(response) {
       console.log(response)
       if (response.status = 'OK') {

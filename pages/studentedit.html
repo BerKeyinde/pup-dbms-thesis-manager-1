@@ -218,7 +218,7 @@
       student[data[i].name] = data[i].value;
   }
 
-  var user_api = '/student/' + '{{item.key.id()}}';
+  var user_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/student/' + '{{item.key.id()}}';
   $.post(user_api, student, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {
@@ -244,7 +244,7 @@
     var r = confirm("Are you sure you want to delete this entry?");
 
     if (r == true) {
-      var student_api = '/student/{{item.key.id()}}/delete';
+      var student_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/student/{{item.key.id()}}/delete';
       $.post(student_api, student, function(response) {
       console.log(response)
       if (response.status = 'OK') {

@@ -1,6 +1,6 @@
 function loaduniversity () {
     // body...
-    var university_list_api = '/university/api'
+    var university_list_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/university/api'
 
     $.get(university_list_api, {}, function(response) {
     response.data.forEach(function(university) {
@@ -27,7 +27,7 @@ function universityAdd(event)
     university[data[i].name] = data[i].value;
   }
 
-  var user_api = '/university/create';
+  var user_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/university/create';
   $.post(user_api, university, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {

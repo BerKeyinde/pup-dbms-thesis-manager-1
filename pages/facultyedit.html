@@ -185,7 +185,7 @@ function facultyEdit(event)
     faculty[data[i].name] = data[i].value;
   }
 
-  var faculty_api = '/faculty/{{item.key.id()}}';
+  var faculty_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/faculty/{{item.key.id()}}';
   $.post(faculty_api, faculty, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {
@@ -211,7 +211,7 @@ function facultyEdit(event)
     var r = confirm("Are you sure you want to delete this entry?");
 
     if (r == true) {
-      var faculty_api = '/faculty/{{item.key.id()}}/delete';
+      var faculty_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/faculty/{{item.key.id()}}/delete';
       $.post(faculty_api, faculty, function(response) {
       console.log(response)
       if (response.status = 'OK') {

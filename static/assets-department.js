@@ -1,6 +1,6 @@
 function loaddepartment () {
 	// body...
-	var department_list_api = '/department/api'
+	var department_list_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/department/api'
 
 	$.get(department_list_api, {}, function(response) {
     response.data.forEach(function(department) {
@@ -26,7 +26,7 @@ function departmentAdd(event)
     dept[data[i].name] = data[i].value;
   }
 
-  var dept_api = '/department/create';
+  var dept_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/department/create';
   $.post(dept_api, dept, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {

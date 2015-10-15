@@ -146,7 +146,7 @@
       department[data[i].name] = data[i].value;
   }
 
-  var user_api = '/department/' + '{{item.key.id()}}';
+  var user_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/department/' + '{{item.key.id()}}';
   $.post(user_api, department, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {
@@ -172,7 +172,7 @@
     var r = confirm("Are you sure you want to delete this entry?");
 
     if (r == true) {
-      var department_api = '/department/{{item.key.id()}}/delete';
+      var department_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/department/{{item.key.id()}}/delete';
       $.post(department_api, department, function(response) {
       console.log(response)
       if (response.status = 'OK') {

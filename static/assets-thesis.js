@@ -1,5 +1,5 @@
 function loadAll() {
-  var thesis_list_api = '/thesis/create/api';
+  var thesis_list_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/thesis/create/api';
   $.get(thesis_list_api, {}, function(response) {
     response.faculty_data.forEach(function(faculty) {
       var thesis_adviser = faculty.full_name;
@@ -29,7 +29,7 @@ function loadAll() {
 }
 
 function onForm(event){
-  var d = $('.thesis_proponents').val();
+  var d = $('#thesis_proponents').val();
   var data = $(event.target).serializeArray();
 
   var thesis = {};
@@ -41,7 +41,7 @@ function onForm(event){
     } else {thesis[data[i].name] = data[i].value;}
   }
 
-  var thesis_api = '/api/thesis';
+  var thesis_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/api/thesis';
   $.post(thesis_api, thesis, function(response) {
     console.log('data', response)
     if (response.status = 'OK') {

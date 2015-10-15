@@ -1,5 +1,5 @@
 function loadAll() {
-  var thesis_list_api = '/api/thesis';
+  var thesis_list_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/api/thesis';
   $.get(thesis_list_api, {}, function(response) {
     response.thesis_data.forEach(function(thesis_list) {
       var thesis_item = thesis_list.year + ' ' + thesis_list.title;
@@ -32,27 +32,6 @@ function loadAll() {
     $('.filter').append('</optgroup>');
   });
 }
-function onReg(event)
-{
-  var data = $(event.target).serializeArray();
-
-  var user = {};
-  for (var i = 0; i < data.length; i++) {
-    user[data[i].name] = data[i].value;
-  }
-
-  var user_api = '/register';
-  $.post(user_api, user, function(response) {
-    console.log('data', response)
-    if (response.status = 'OK') {
-       alert('Registration success');
-       window.location.replace("/");
-     } else {
-       alert('Something went wrong');
-     }
-  });
-  return false;
-}
 
 function search(event)
 {
@@ -62,7 +41,7 @@ function search(event)
     user[data[i].name] = data[i].value;
   }
 
-  var user_api = '/search';
+  var user_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) +'/search';
   $.post(user_api, user, function(response) {
       console.log('data', response);
       
@@ -80,5 +59,5 @@ function search(event)
 }
 
 loadAll();
-$('.regform').submit(onReg);
+
 $('.thesis-search').submit(search);

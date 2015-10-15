@@ -1856,6 +1856,7 @@ class ThesisEditHandler(webapp2.RequestHandler):
 					template_values = {
 						'links':links,
 						'id': id,
+						'search_url':'/search',
 						'proponents':proponents,
 						'adviser':adviser,
 						'department':department,

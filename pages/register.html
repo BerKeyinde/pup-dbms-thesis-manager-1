@@ -36,11 +36,35 @@
           <div class='col-md-4'></div>
       </div>
     </div>
-    <script type="text/javascript" src='/static/script.js'></script>
     <script type="text/javascript" src='/static/js/flat-ui.min.js'></script>
   <script type="text/javascript" src='/static/js/prettify.js'></script>
   <script type="text/javascript" src='/static/js/radiocheck.js'></script>
   <script type="text/javascript" src='/static/js/application.js'></script>
   <script type="text/javascript" src='/static/js/vendor/bootstrap.min.js'></script>
+  <script type="text/javascript">
+    function onReg(event)
+    {
+      var data = $(event.target).serializeArray();
+
+      var user = {};
+      for (var i = 0; i < data.length; i++) {
+        user[data[i].name] = data[i].value;
+      }
+
+      var user_api = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + '/register';
+      $.post(user_api, user, function(response) {
+        console.log('data', response)
+        if (response.status = 'OK') {
+           alert('Registration success');
+           window.location.replace("/");
+         } else {
+           alert('Something went wrong');
+         }
+      });
+      return false;
+    }
+    $('.regform').submit(onReg);
+
+  </script>
   </body>
 </html>
